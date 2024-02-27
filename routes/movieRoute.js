@@ -19,11 +19,11 @@ router.get("/:id",getSingleMovie)
 
 // ---- for users only!!! ----
 
-//update user vote about single movie
-router.patch("/vote/:id",updateVoteMovie)
-
 //update user rating about single movie
 router.patch("/rate/:id",updateRatingMovie)
+
+//update user vote about single movie (only if he rate the movie!!!)
+router.patch("/vote/:id",updateVoteMovie)
 
 //update user commends about single movie
 router.patch("/commends/:id",updateCommendsMovie)
