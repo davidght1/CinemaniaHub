@@ -1,6 +1,11 @@
 const express = require('express');
 const router = express.Router()
-
+const { getAllMovies,
+    getSingleMovie,
+    updateMovie,
+    updateRatingMovie,
+    updateVoteMovie,
+    deleteMovie} = require('../controllers/movieController')
 //get all movies
 
 //get single movie
