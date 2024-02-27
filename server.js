@@ -3,13 +3,15 @@ const bodyParser = require('body-parser')
 const mongoose =require('mongoose')
 const express = require('express')
 const app = express()
+const movieRoute = require('./routes/movieRoute')
 
 //Middlewares
 app.use(express.json())
 app.use(bodyParser.json())
 
 
-//Routes
+//Routes Middleware
+app.use('/api/movie',movieRoute)
 
 //Error Middleware
 

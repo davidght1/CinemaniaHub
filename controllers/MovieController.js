@@ -38,11 +38,20 @@ const deleteMovie = asyncHandler(async (req,res)=>{
 })
 
 
+// Get movie stats for cinema owners
+const getMovieStats = asyncHandler(async (req,res)=>{
+    res.status(200).json({message: 'movie details for cinema owner'})
+})
+
+
 module.exports = {
     getAllMovies,
     getSingleMovie,
     updateMovie,
     updateRatingMovie,
     updateVoteMovie,
-    deleteMovie
+    createMovie,
+    deleteMovie,
+    
+    getMovieStats
 }
