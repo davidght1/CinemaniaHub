@@ -7,6 +7,7 @@ const { getAllMovies,
         updateVoteMovie,
         getMovieStats,
         createMovie,
+        updateCommendsMovie,
         deleteMovie} = require('../controllers/movieController')
 
 // ---- for all ----
@@ -16,7 +17,7 @@ router.get("/",getAllMovies);
 //get single movie
 router.get("/:id",getSingleMovie)
 
-// ---- for users ----
+// ---- for users only!!! ----
 
 //update user vote about single movie
 router.patch("/vote/:id",updateVoteMovie)
@@ -24,6 +25,8 @@ router.patch("/vote/:id",updateVoteMovie)
 //update user rating about single movie
 router.patch("/rate/:id",updateRatingMovie)
 
+//update user commends about single movie
+router.patch("/commends/:id",updateCommendsMovie)
 
 
 // ---- for admin only!!! ---- 
