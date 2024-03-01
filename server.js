@@ -4,6 +4,7 @@ const mongoose =require('mongoose')
 const express = require('express')
 const app = express()
 const movieRoute = require('./routes/movieRoute')
+const userRoute = require('./routes/userRoute')
 
 //Middlewares
 app.use(express.json())
@@ -12,6 +13,7 @@ app.use(bodyParser.json())
 
 //Routes Middleware
 app.use('/api/movie',movieRoute)
+app.use('/api/user',userRoute)
 
 //Error Middleware
 
