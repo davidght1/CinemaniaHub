@@ -41,14 +41,14 @@ const registerUser = asyncHandler(async (req,res)=>{
         });
     
         // Create and sign a JWT token
-        const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, { expiresIn: '1h' });
     
         // Set the token as an HttpOnly cookie
         res.cookie('token', token, { httpOnly: true, maxAge: 3600000 });
     
         res.status(201).json({
             message: 'user has been created',
-            userId: user._id,
+            id: user._id,
             name: user.name,
             email: user.email
         });
@@ -101,7 +101,7 @@ const loginUser = asyncHandler(async (req,res)=>{
         const passwordCorrect = await bcrypt.compare(password, user.password)
         
         //generate token for the user 
-        const token = jwt.sign({userId: user._id}, process.env.SECRET_KEY, { expiresIn: '1h' })
+        const token = jwt.sign({id: user._id}, process.env.SECRET_KEY, { expiresIn: '1h' })
 
         // if user exists and password is correct we logged in the user
         if(user && passwordCorrect){
@@ -110,7 +110,7 @@ const loginUser = asyncHandler(async (req,res)=>{
             // send user details
             res.status(200).json({
                 message: 'user has been logged in',
-                userId: user._id,
+                id: user._id,
                 email: user.email,
             })
 

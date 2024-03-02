@@ -8,11 +8,12 @@ const { getAllMovies,
         getMovieStats,
         createMovie,
         updateCommendsMovie,
-        deleteMovie} = require('../controllers/movieController')
+        deleteMovie} = require('../controllers/movieController');
+const protectUser = require('../middleWare/authUserMiddleware');
 
 // ---- for all ----
 //get all movies
-router.get("/",getAllMovies);
+router.get("/",protectUser,getAllMovies);
 
 //get single movie
 router.get("/:id",getSingleMovie)
