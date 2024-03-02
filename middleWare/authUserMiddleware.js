@@ -5,7 +5,6 @@ const jwt = require('jsonwebtoken')
 const protectUser = asyncHandler(async (req,res,next)=>{
     try{
         const token = req.cookies.token
-        console.log(token)
 
         if(!token){
             res.status(401)
@@ -15,17 +14,17 @@ const protectUser = asyncHandler(async (req,res,next)=>{
         //verified token
         const verified = jwt.verify(token, process.env.SECRET_KEY)
         // get user id from token
-        console.log(verified.id)
         const user = await User.findById(verified.id).select("-password")
         if(!user){
             res.status(401)
             return res.json({message: 'User not found'})
         }
-        console.log(user)
+        //check user role
         if(user.userRole !== 'user'){
             res.status(401)
             return res.json({message: "You do not have permission to get here"})
         }
+        //send back the user
         req.user = user
         next()
     }catch(error){
