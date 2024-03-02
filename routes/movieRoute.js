@@ -13,7 +13,7 @@ const protectUser = require('../middleWare/authUserMiddleware');
 
 // ---- for all ----
 //get all movies
-router.get("/",protectUser,getAllMovies);
+router.get("/",getAllMovies);
 
 //get single movie
 router.get("/:id",getSingleMovie)
@@ -21,13 +21,13 @@ router.get("/:id",getSingleMovie)
 // ---- for users only!!! ----
 
 //update user rating about single movie
-router.patch("/rate/:id",updateRatingMovie)
+router.patch("/rate/:id",protectUser,updateRatingMovie)
 
 //update user vote about single movie (only if he rate the movie!!!)
-router.patch("/vote/:id",updateVoteMovie)
+router.patch("/vote/:id",protectUser,updateVoteMovie)
 
 //update user commends about single movie
-router.patch("/commends/:id",updateCommendsMovie)
+router.patch("/commends/:id",protectUser,updateCommendsMovie)
 
 
 // ---- for admin only!!! ---- 
