@@ -137,12 +137,13 @@ const loginUser = asyncHandler(async (req,res)=>{
 
 // logout user controller
 const logoutUser = asyncHandler(async (req,res)=>{
-    res.status(200).json({message: 'logout user'})
+    res.cookie("token", "")
+    return res.status(200).json({message: 'Successfully Logged Out!'})
 })
 
 // login status user controller
-const loginStatus = asyncHandler(async (req,res)=>{
-    res.status(200).json({message: 'login status'})
+const getUser = asyncHandler(async (req,res)=>{
+  
 })
 
 
@@ -151,5 +152,5 @@ module.exports = {
     registerUser,
     loginUser,
     logoutUser,
-    loginStatus
+    getUser
 }

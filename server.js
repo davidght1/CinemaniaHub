@@ -5,9 +5,11 @@ const express = require('express')
 const app = express()
 const movieRoute = require('./routes/movieRoute')
 const userRoute = require('./routes/userRoute')
+const cookieParser = require("cookie-parser");
 
 //Middlewares
 app.use(express.json())
+app.use(cookieParser())
 app.use(bodyParser.json())
 
 
