@@ -21,7 +21,7 @@ const protectCinemaOwner = asyncHandler(async (req,res,next)=>{
             return res.json({message: 'User not found'})
         }
         //check user role
-        if(user.userRole.toLowerCase !== 'cinemaowner'){
+        if(user.userRole !== 'cinemaowner'){
             res.status(401)
             return res.json({message: "You do not have permission to get here"})
         }

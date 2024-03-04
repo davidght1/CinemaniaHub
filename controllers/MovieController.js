@@ -1,4 +1,16 @@
 const asyncHandler = require("express-async-handler");
+const Movie = require("../models/movieModel")
+const cloudinary  = require("cloudinary").v2
+
+// setup cloudinary
+cloudinary.config({
+    cloud_name: "dmjohqyxw",
+    api_key: "461793583347939",
+    api_secret: "CylryzpuacmRJ71sLHgRCeL0Fek"
+})
+
+
+
 
 // --- for all ---
 
@@ -31,12 +43,50 @@ const updateCommendsMovie = asyncHandler(async (req,res)=>{
     res.status(200).json({message: 'commend updated'})
 })
 
-// Post movie
+// Create movie
 const createMovie = asyncHandler(async (req,res)=>{
-    res.status(200).json({message: 'movie created'})
+    try{
+        const {title, description, genre} = req.body
+
+    // check if all fields exists
+    if(!title,!description,!genre){
+        return res.status(400).json({message: "Please fill all required fields to create movie"})
+    }
+
+    // check if file exists
+    if(!req.file){
+        return res.status(400).json({message: "Please upload a picture for the movie"})
+    }
+    // where we want save the photo
+    const folderName = "cinemaniahub"
+
+    console.log(req.file.path)
+
+    //Upload image to Cloudinary with the specified folder
+    const result = await cloudinary.uploader.upload(req.file.path, {
+        folder:folderName,
+    })
+
+
+
+    const newMovie = new Movie({
+        title,
+        description,
+        genre,
+        pictureUrl: result.secure_url, // Use the secure_url from Cloudinary
+      });
+
+      await newMovie.save()
+
+      res.status(201).json({message: "Movie created", data: newMovie})
+    }catch(error){
+        console.log("Error creating movie:",error)
+        res.status(500).json({message: "Something went wrong please try again later"})
+    }
+
 })
 
-// Patch movie details
+// Update movie details
 const updateMovie = asyncHandler(async (req,res)=>{
     res.status(200).json({message: 'movie updated'})
 })

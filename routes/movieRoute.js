@@ -13,6 +13,12 @@ const protectUser = require('../middleWare/authUserMiddleware');
 const protectAdmin = require('../middleWare/authAdminMiddleware')
 const protectCinemaOwner = require('../middleWare/authCinemaOwnerMiddleware')
 
+
+const upload = require('../utils/multerConfig');
+
+
+
+
 // ---- for all ----
 //get all movies
 router.get("/",getAllMovies);
@@ -35,7 +41,7 @@ router.patch("/commends/:id",protectUser, updateCommendsMovie)
 // ---- for admin only!!! ---- 
 
 //add movie (only by admin)
-router.post("/",protectAdmin, createMovie)
+router.post("/",protectAdmin, upload.single("photo"), createMovie)
 
 //edit movie (only by admin)
 router.patch('/update/:id',protectAdmin, updateMovie)
