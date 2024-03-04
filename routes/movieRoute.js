@@ -10,7 +10,7 @@ const { getAllMovies,
         updateCommendsMovie,
         deleteMovie} = require('../controllers/movieController');
 const protectUser = require('../middleWare/authUserMiddleware');
-const protectAdmin = require('../middleWare/authUserMiddleware')
+const protectAdmin = require('../middleWare/authAdminMiddleware')
 const protectCinemaOwner = require('../middleWare/authCinemaOwnerMiddleware')
 
 // ---- for all ----
