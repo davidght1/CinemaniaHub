@@ -10,6 +10,8 @@ const { getAllMovies,
         updateCommendsMovie,
         deleteMovie} = require('../controllers/movieController');
 const protectUser = require('../middleWare/authUserMiddleware');
+const protectAdmin = require('../middleWare/authUserMiddleware')
+const protectCinemaOwner = require('../middleWare/authCinemaOwnerMiddleware')
 
 // ---- for all ----
 //get all movies
@@ -21,29 +23,29 @@ router.get("/:id",getSingleMovie)
 // ---- for users only!!! ----
 
 //update user rating about single movie
-router.patch("/rate/:id",protectUser,updateRatingMovie)
+router.patch("/rate/:id",protectUser, updateRatingMovie)
 
 //update user vote about single movie (only if he rate the movie!!!)
-router.patch("/vote/:id",protectUser,updateVoteMovie)
+router.patch("/vote/:id",protectUser, updateVoteMovie)
 
 //update user commends about single movie
-router.patch("/commends/:id",protectUser,updateCommendsMovie)
+router.patch("/commends/:id",protectUser, updateCommendsMovie)
 
 
 // ---- for admin only!!! ---- 
 
 //add movie (only by admin)
-router.post("/",createMovie)
+router.post("/",protectAdmin, createMovie)
 
 //edit movie (only by admin)
-router.patch('/update/:id',updateMovie)
+router.patch('/update/:id',protectAdmin, updateMovie)
 
 //delete movie(only by admin)
-router.delete('/delete/:id',deleteMovie)
+router.delete('/delete/:id',protectAdmin, deleteMovie)
 
 // ---- for cinema owners only!!! ----
 
 //get movie details (for cinema owners)
-router.get('/details', getMovieStats)
+router.get('/details',protectCinemaOwner, getMovieStats)
 
 module.exports = router

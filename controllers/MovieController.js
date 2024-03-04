@@ -4,7 +4,7 @@ const asyncHandler = require("express-async-handler");
 
 // Get all movies 
 const getAllMovies = asyncHandler(async (req,res)=>{
-    res.status("200").json({message: 'get all movies'})
+    res.status(200).json({message: 'get all movies'})
 })
 
 
