@@ -1,3 +1,4 @@
+require('dotenv').config();
 const asyncHandler = require("express-async-handler");
 const Movie = require("../models/movieModel")
 const cloudinary  = require("cloudinary").v2
@@ -7,8 +8,7 @@ cloudinary.config({
     cloud_name: "dmjohqyxw",
     api_key: "461793583347939",
     api_secret: "CylryzpuacmRJ71sLHgRCeL0Fek"
-})
-
+ });
 
 
 
@@ -49,7 +49,7 @@ const createMovie = asyncHandler(async (req,res)=>{
         const {title, description, genre} = req.body
 
     // check if all fields exists
-    if(!title,!description,!genre){
+    if(!title || !description || !genre){
         return res.status(400).json({message: "Please fill all required fields to create movie"})
     }
 
@@ -60,7 +60,6 @@ const createMovie = asyncHandler(async (req,res)=>{
     // where we want save the photo
     const folderName = "cinemaniahub"
 
-    console.log(req.file.path)
 
     //Upload image to Cloudinary with the specified folder
     const result = await cloudinary.uploader.upload(req.file.path, {
