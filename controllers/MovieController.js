@@ -249,7 +249,42 @@ const deleteMovie = asyncHandler(async (req,res)=>{
 
 // Get movie stats for cinema owners
 const getMovieStats = asyncHandler(async (req,res)=>{
-    res.status(200).json({message: 'movie details for cinema owner'})
+    try {
+        // Get all movies
+        const movies = await Movie.find();
+    
+        // Calculate most chosen vote and total rating per movie
+        const movieStats = movies.map(movie => {
+          // Calculate total rating
+          const totalRating = movie.ratings.reduce((sum, rating) => sum + rating.rating, 0);
+    
+          // Calculate most chosen vote
+          const voteCount = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+          movie.userVotes.forEach(vote => {
+            vote.choices.forEach(choice => {
+              if (choice >= 1 && choice <= 8) { 
+                voteCount[choice - 1]++;
+              }
+            });
+          });
+    
+          // Find the maximum count and corresponding vote
+          const maxVoteCount = Math.max(...voteCount);
+          const mostChosenVote = maxVoteCount > 0 ? voteCount.indexOf(maxVoteCount) + 1 : null;
+    
+          return {
+            movieId: movie._id,
+            title: movie.title,
+            mostChosenVote: mostChosenVote,
+            totalRating: totalRating
+          };
+        });
+    
+        res.json({ movieStats: movieStats });
+      } catch (error) {
+        console.error("Error getting movie stats:", error);
+        res.status(500).json({ message: "Internal server error" });
+      }
 })
 
 

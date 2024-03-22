@@ -17,6 +17,10 @@ const protectCinemaOwner = require('../middleWare/authCinemaOwnerMiddleware')
 const upload = require('../utils/multerConfig');
 
 
+// ---- for cinema owners only!!! ----
+
+//get movie details (for cinema owners)
+router.get('/details',protectCinemaOwner, getMovieStats)
 
 
 // ---- for all ----
@@ -49,9 +53,6 @@ router.patch('/update/:id',protectAdmin, updateMovie)
 //delete movie(only by admin)
 router.delete('/delete/:id',protectAdmin, deleteMovie)
 
-// ---- for cinema owners only!!! ----
 
-//get movie details (for cinema owners)
-router.get('/details',protectCinemaOwner, getMovieStats)
 
 module.exports = router
