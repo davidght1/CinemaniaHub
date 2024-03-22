@@ -1,6 +1,7 @@
 require('dotenv').config();
 const asyncHandler = require("express-async-handler");
 const Movie = require("../models/movieModel")
+const User = require('../models/userModel')
 const cloudinary  = require("cloudinary").v2
 
 // setup cloudinary
@@ -72,6 +73,37 @@ const updateVoteMovie = asyncHandler(async (req,res)=>{
           userId: userId,
           choices: userChoices
         });
+
+        const user = await User.findById(userId);
+        if (user) {
+          user.votes += 1;
+          
+          // Update user's coins based on their ratingUser
+          let coinsEarned = 5; // Default coins earned per vote
+          switch (user.ratingUser) {
+            case 'bronze':
+              coinsEarned = 10;
+              break;
+            case 'silver':
+              coinsEarned = 15;
+              break;
+            case 'gold':
+              coinsEarned = 20;
+              break;
+          }
+          user.coins += coinsEarned;
+    
+          // Update user's ratingUser if necessary
+          if (user.votes >= 5 && user.votes < 10) {
+            user.ratingUser = 'bronze';
+          } else if (user.votes >= 10 && user.votes < 15) {
+            user.ratingUser = 'silver';
+          } else if (user.votes >= 15) {
+            user.ratingUser = 'gold';
+          }
+    
+          await user.save();
+        }
     
         // Save the updated movie
         await movie.save();
