@@ -45,7 +45,42 @@ const getSingleMovie = asyncHandler(async (req,res)=>{
 
 // Patch vote on a single movie
 const updateVoteMovie = asyncHandler(async (req,res)=>{
-    res.status(200).json({message: 'vote updated'})
+    try {
+        const movieId = req.params.id;
+        const userId = req.user._id;
+        const userChoices = req.body.choices; // Assuming the choices are sent in the request body
+    
+        // Check if the movie exists
+        const movie = await Movie.findById(movieId);
+        if (!movie) {
+          return res.status(404).json({ message: "Movie not found" });
+        }
+    
+        // Check if the user has already voted for this movie
+        const existingVote = movie.userVotes.find(vote => vote.userId.equals(userId));
+        if (existingVote) {
+          return res.status(400).json({ message: "User has already voted for this movie" });
+        }
+    
+        // Validate user input (choices)
+        if (!userChoices || userChoices.length !== 3 || !userChoices.every(choice => choice >= 1 && choice <= 8)) {
+          return res.status(400).json({ message: "Invalid choices. You must select exactly 3 choices from the predefined options (1 to 8)" });
+        }
+    
+        // Add the new vote
+        movie.userVotes.push({
+          userId: userId,
+          choices: userChoices
+        });
+    
+        // Save the updated movie
+        await movie.save();
+    
+        res.json({ message: "Vote saved successfully" });
+      } catch (error) {
+        console.error("Error saving vote for movie:", error);
+        res.status(500).json({ message: "Internal server error" });
+      }
 })
 
 
