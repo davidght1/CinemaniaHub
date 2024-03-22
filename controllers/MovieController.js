@@ -48,7 +48,7 @@ const updateVoteMovie = asyncHandler(async (req,res)=>{
     try {
         const movieId = req.params.id;
         const userId = req.user._id;
-        const userChoices = req.body.choices; // Assuming the choices are sent in the request body
+        const userChoices = req.body.choices;
     
         // Check if the movie exists
         const movie = await Movie.findById(movieId);
@@ -126,7 +126,31 @@ const updateRatingMovie = asyncHandler(async (req,res)=>{
 
 // Patch post commends
 const updateCommendsMovie = asyncHandler(async (req,res)=>{
-    res.status(200).json({message: 'commend updated'})
+    try {
+        const movieId = req.params.id;
+        const userId = req.user._id;
+        const newComment = req.body.content;
+    
+        // Check if the movie exists
+        const movie = await Movie.findById(movieId);
+        if (!movie) {
+          return res.status(404).json({ message: "Movie not found" });
+        }
+    
+        // Add the new comment
+        movie.userPosts.push({
+          userId: userId,
+          content: newComment
+        });
+    
+        // Save the updated movie
+        await movie.save();
+    
+        res.json({ message: "Comment added successfully" });
+      } catch (error) {
+        console.error("Error adding comment to movie:", error);
+        res.status(500).json({ message: "Internal server error" });
+      }
 })
 
 // --- for admin only ---
