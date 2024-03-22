@@ -129,6 +129,8 @@ const updateCommendsMovie = asyncHandler(async (req,res)=>{
     res.status(200).json({message: 'commend updated'})
 })
 
+// --- for admin only ---
+
 // Create movie
 const createMovie = asyncHandler(async (req,res)=>{
     try{
@@ -180,6 +182,7 @@ const deleteMovie = asyncHandler(async (req,res)=>{
     res.status(200).json({message: 'movie deleted'})
 })
 
+// --- for cinema users only ---
 
 // Get movie stats for cinema owners
 const getMovieStats = asyncHandler(async (req,res)=>{
