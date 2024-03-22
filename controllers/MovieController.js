@@ -16,13 +16,29 @@ cloudinary.config({
 
 // Get all movies 
 const getAllMovies = asyncHandler(async (req,res)=>{
-    res.status(200).json({message: 'get all movies'})
+    try{
+        const movies = await Movie.find();
+
+        res.status(200).json({message: "Get all movies", data: movies})
+    }
+    catch(error){
+        res.status(500).json({ message: "Something went wrong please try again later"});
+    }
+
 })
 
 
 // Get single movies 
 const getSingleMovie = asyncHandler(async (req,res)=>{
-    res.status(200).json({message: 'get single movie'})
+    try{
+        const {_id} = req.params
+        const movie = await Movie.findOne(_id);
+
+        res.status(200).json({message: "Get all movies", data: movie})
+    }
+    catch(error){
+        res.status(500).json({ message: "Something went wrong please try again later"});
+    }
 })
 
 // --- for users only --- 
@@ -79,7 +95,6 @@ const createMovie = asyncHandler(async (req,res)=>{
 
       res.status(201).json({message: "Movie created", data: newMovie})
     }catch(error){
-        console.log("Error creating movie:",error)
         res.status(500).json({message: "Something went wrong please try again later"})
     }
 
