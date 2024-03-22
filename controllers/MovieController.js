@@ -226,7 +226,23 @@ const updateMovie = asyncHandler(async (req,res)=>{
 
 // Delete movie
 const deleteMovie = asyncHandler(async (req,res)=>{
-    res.status(200).json({message: 'movie deleted'})
+    try {
+        const movieId = req.params.id;
+    
+        // Check if the movie exists
+        const movie = await Movie.findById(movieId);
+        if (!movie) {
+          return res.status(404).json({ message: "Movie not found" });
+        }
+    
+        // Delete the movie
+        await movie.deleteOne();
+    
+        res.json({ message: "Movie deleted successfully" });
+      } catch (error) {
+        console.error("Error deleting movie:", error);
+        res.status(500).json({ message: "Internal server error" });
+      }
 })
 
 // --- for cinema users only ---
