@@ -65,7 +65,7 @@ const registerUser = asyncHandler(async (req,res)=>{
         } else {
             // Handle other errors
             console.error(error);
-            res.status(500).json({ error: 'Internal Server Error' });
+            res.status(500).json({ error: 'Something went wrong please try again later' });
         }
     }
 })

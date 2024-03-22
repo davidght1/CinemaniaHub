@@ -51,7 +51,42 @@ const updateVoteMovie = asyncHandler(async (req,res)=>{
 
 // Patch rating on a single movie
 const updateRatingMovie = asyncHandler(async (req,res)=>{
-    res.status(200).json({message: 'rating updated'})
+    try{
+        const movieId = req.params.id
+        const userId = req.user._id
+        console.log(movieId)
+        // check if movie exists
+        const movie = await Movie.findById(movieId)
+        if(!movie){
+            return res.status(404).json({message: 'Movie not found'})
+        }
+
+        // Check if the user has already rated this movie
+        const existingRatingIndex = movie.ratings.findIndex(rating => rating.userId.equals(userId));
+        if (existingRatingIndex !== -1) {
+        return res.status(400).json({ message: "User has already rated this movie" });
+        }
+
+        // Validate user input
+        const userRating = parseInt(req.body.rating);
+        if (isNaN(userRating) || userRating < 1 || userRating > 5) {
+        return res.status(400).json({ message: "Invalid rating. Rating must be between 1 and 5" });
+        }
+
+        // Add the new rating
+        movie.ratings.push({
+        userId: userId,
+        rating: userRating
+        });
+
+        // Save the updated movie
+        await movie.save();
+
+        res.json({ message: "Rating added successfully" });
+    }
+    catch(error){
+        return res.status(500).json({ message: "Something went wrong please try again later" });
+    }
 })
 
 // Patch post commends
