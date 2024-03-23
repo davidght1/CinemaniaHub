@@ -5,6 +5,7 @@ const express = require('express')
 const app = express()
 const movieRoute = require('./routes/movieRoute')
 const userRoute = require('./routes/userRoute')
+const productRoute = require('./routes/productRoute')
 const cookieParser = require("cookie-parser");
 
 //Middlewares
@@ -16,6 +17,7 @@ app.use(bodyParser.json())
 //Routes Middleware
 app.use('/api/movie',movieRoute)
 app.use('/api/user',userRoute)
+app.use('/api/products',productRoute)
 
 //Error Middleware
 
