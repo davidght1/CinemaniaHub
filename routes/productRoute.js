@@ -14,7 +14,7 @@ router.post('/create',protectAdmin ,upload.single("photo") ,createProduct)
 // --- users only ---
 
 // buy product
-router.get('/buy',protectUser ,buyProduct)
+router.get('/buy/:id',protectUser ,buyProduct)
 
 // get all product
 router.get('/',protectUser ,getAllProducts)

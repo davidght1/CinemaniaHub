@@ -50,12 +50,52 @@ cloudinary.config({
 
  // get all product
  const getAllProducts = asyncHandler(async (req,res)=>{
-    res.status(200).json({message: "get all product"})
+    try {
+        const products = await Product.find();
+        res.status(200).json({ products: products });
+    } catch (error) {
+        console.error("Error fetching all products:", error);
+        res.status(500).json({ message: "Something went wrong, please try again later" });
+    }
  })
  
   // buy product
   const buyProduct = asyncHandler(async (req,res)=>{
-    res.status(200).json({message: "Buy product"})
+    try {
+        const productId = req.params.id;
+        const userId = req.user._id;
+
+        // Find the product
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        // Find the user
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Check if user has enough coins
+        if (user.coins < product.price) {
+            return res.status(400).json({ message: "Not enough coins to buy this product" });
+        }
+
+        // Generate random coupon number
+        const couponNumber = Math.floor(Math.random() * 10000);
+
+        // Deduct product price from user's coins
+        user.coins -= product.price;
+
+        // Save updated user information
+        await user.save();
+
+        res.status(200).json({ message: "Product purchased successfully", coupon: couponNumber });
+    } catch (error) {
+        console.error("Error buying product:", error);
+        res.status(500).json({ message: "Something went wrong, please try again later" });
+    }
   })
 
 
