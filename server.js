@@ -7,6 +7,11 @@ const movieRoute = require('./routes/movieRoute')
 const userRoute = require('./routes/userRoute')
 const productRoute = require('./routes/productRoute')
 const cookieParser = require("cookie-parser");
+const cors = require('cors')
+
+
+// cors
+app.use(cors());
 
 //Middlewares
 app.use(express.json())
