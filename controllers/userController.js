@@ -50,7 +50,8 @@ const registerUser = asyncHandler(async (req,res)=>{
             message: 'user has been created',
             id: user._id,
             name: user.name,
-            email: user.email
+            email: user.email,
+            token: token
         });
     } catch (error) {
         if (error.name === 'ValidationError') {
@@ -112,6 +113,7 @@ const loginUser = asyncHandler(async (req,res)=>{
                 message: 'user has been logged in',
                 id: user._id,
                 email: user.email,
+                token: token
             })
 
         }
