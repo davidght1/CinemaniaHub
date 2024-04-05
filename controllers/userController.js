@@ -51,6 +51,7 @@ const registerUser = asyncHandler(async (req,res)=>{
             id: user._id,
             name: user.name,
             email: user.email,
+            userRole: user.userRole,
             token: token
         });
     } catch (error) {
@@ -114,13 +115,14 @@ const loginUser = asyncHandler(async (req,res)=>{
                 id: user._id,
                 name: user.name,
                 email: user.email,
+                userRole: user.userRole,
                 token: token
             })
 
         }
         else{
             res.status(400)
-            return res.json({message: "invalid email or password"})
+            return res.json({error: "invalid email or password"})
         }
 
 
