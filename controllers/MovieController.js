@@ -33,8 +33,7 @@ const getAllMovies = asyncHandler(async (req,res)=>{
 const getSingleMovie = asyncHandler(async (req,res)=>{
     try{
         const {_id} = req.params
-        const movie = await Movie.findOne(_id);
-
+        const movie = await Movie.findById(_id);
         res.status(200).json({message: "Get all movies", data: movie})
     }
     catch(error){

@@ -28,7 +28,7 @@ router.get('/details',protectCinemaOwner, getMovieStats)
 router.get("/",getAllMovies);
 
 //get single movie
-router.get("/:id",getSingleMovie)
+router.get("/getOne/:_id",getSingleMovie)
 
 // ---- for users only!!! ----
 
