@@ -4,7 +4,17 @@ const jwt = require('jsonwebtoken')
 
 const protectCinemaOwner = asyncHandler(async (req,res,next)=>{
     try{
-        const token = req.cookies.token
+        let token;
+
+        // Check for token in cookies first
+        if (req.cookies && req.cookies.token) {
+        token = req.cookies.token;
+        }
+
+        // If token is not found in cookies, check headers
+        if (!token && req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+        token = req.headers.authorization.split(' ')[1]; // Extract token from Authorization header
+        }
 
         if(!token){
             res.status(401)
