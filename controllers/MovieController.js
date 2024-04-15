@@ -107,7 +107,7 @@ const updateVoteMovie = asyncHandler(async (req,res)=>{
         // Save the updated movie
         await movie.save();
     
-        res.json({ message: "Vote saved successfully" });
+        res.status(201).json({ message: "Vote saved successfully" });
       } catch (error) {
         console.error("Error saving vote for movie:", error);
         res.status(500).json({ message: "Internal server error" });
