@@ -65,6 +65,10 @@ const movieSchema = new mongoose.Schema({
       ref: 'User',
       required: true,
     },
+    userName:{
+      type: String,
+      required: true,
+    },
     content: {
       type: String,
       required: true,
