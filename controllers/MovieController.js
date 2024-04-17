@@ -59,7 +59,7 @@ const updateVoteMovie = asyncHandler(async (req,res)=>{
         // Check if the user has already voted for this movie
         const existingVote = movie.userVotes.find(vote => vote.userId.equals(userId));
         if (existingVote) {
-          return res.status(400).json({ message: "User has already voted for this movie" });
+          return res.status(409).json({ message: "User has already voted for this movie" });
         }
     
         // Validate user input (choices)
