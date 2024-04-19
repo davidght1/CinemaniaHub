@@ -120,7 +120,6 @@ const updateRatingMovie = asyncHandler(async (req,res)=>{
     try{
         const movieId = req.params.id
         const userId = req.user._id
-        console.log(movieId)
         // check if movie exists
         const movie = await Movie.findById(movieId)
         if(!movie){
@@ -147,8 +146,8 @@ const updateRatingMovie = asyncHandler(async (req,res)=>{
 
         // Save the updated movie
         await movie.save();
-
-        res.json({ message: "Rating added successfully" });
+        
+        res.status(200).json({ message: "Rating added successfully" });
     }
     catch(error){
         return res.status(500).json({ message: "Something went wrong please try again later" });
