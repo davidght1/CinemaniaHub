@@ -44,75 +44,92 @@ const getSingleMovie = asyncHandler(async (req,res)=>{
 // --- for users only --- 
 
 // Patch vote on a single movie
-const updateVoteMovie = asyncHandler(async (req,res)=>{
-    try {
-        const movieId = req.params.id;
-        const userId = req.user._id;
-        const userChoices = req.body.choices;
-    
-        // Check if the movie exists
-        const movie = await Movie.findById(movieId);
-        if (!movie) {
-          return res.status(404).json({ message: "Movie not found" });
-        }
-    
-        // Check if the user has already voted for this movie
-        const existingVote = movie.userVotes.find(vote => vote.userId.equals(userId));
-        if (existingVote) {
-          return res.status(409).json({ message: "User has already voted for this movie" });
-        }
-    
-        // Validate user input (choices)
-        if (!userChoices || userChoices.length !== 3 || !userChoices.every(choice => choice >= 1 && choice <= 8)) {
-          return res.status(400).json({ message: "Invalid choices. You must select exactly 3 choices from the predefined options (1 to 8)" });
-        }
-    
-        // Add the new vote
-        movie.userVotes.push({
-          userId: userId,
-          choices: userChoices
-        });
+const updateVoteMovie = asyncHandler(async (req, res) => {
+  try {
+    const movieId = req.params.id;
+    const userId = req.user._id;
+    const userChoices = req.body.choices;
 
-        const user = await User.findById(userId);
-        if (user) {
-          user.votes += 1;
-          
-          // Update user's coins based on their ratingUser
-          let coinsEarned = 5; // Default coins earned per vote
-          switch (user.ratingUser) {
-            case 'bronze':
-              coinsEarned = 10;
-              break;
-            case 'silver':
-              coinsEarned = 15;
-              break;
-            case 'gold':
-              coinsEarned = 20;
-              break;
-          }
-          user.coins += coinsEarned;
+    // Check if the movie exists
+    const movie = await Movie.findById(movieId);
+    if (!movie) {
+      return res.status(404).json({ message: "Movie not found" });
+    }
+
+    // Check if the user has already voted for this movie
+    const existingVote = movie.userVotes.find(vote => vote.userId.equals(userId));
+    if (existingVote) {
+      return res.status(409).json({ message: "User has already voted for this movie" });
+    }
+
+    // Validate user input (choices)
+    if (!userChoices || userChoices.length !== 3 || !userChoices.every(choice => choice >= 1 && choice <= 8)) {
+      return res.status(400).json({ message: "Invalid choices. You must select exactly 3 choices from the predefined options (1 to 8)" });
+    }
+
+    // Add the new vote
+    movie.userVotes.push({
+      userId: userId,
+      choices: userChoices
+    });
+
+    // Save the updated movie
+    await movie.save();
+
+    // Retrieve the user associated with the vote
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update user's votes count
+    user.votes += 1;
+
+    // Update user's coins based on their ratingUser
+    let coinsEarned = 5; // Default coins earned per vote
+    switch (user.ratingUser) {
+      case 'bronze':
+        coinsEarned = 10;
+        break;
+      case 'silver':
+        coinsEarned = 15;
+        break;
+      case 'gold':
+        coinsEarned = 20;
+        break;
+    }
     
-          // Update user's ratingUser if necessary
-          if (user.votes >= 5 && user.votes < 10) {
-            user.ratingUser = 'bronze';
-          } else if (user.votes >= 10 && user.votes < 15) {
-            user.ratingUser = 'silver';
-          } else if (user.votes >= 15) {
-            user.ratingUser = 'gold';
-          }
-    
-          await user.save();
-        }
-    
-        // Save the updated movie
-        await movie.save();
-    
-        res.status(201).json({ message: "Vote saved successfully" });
-      } catch (error) {
-        console.error("Error saving vote for movie:", error);
-        res.status(500).json({ message: "Internal server error" });
+    user.coins += coinsEarned;
+
+    // Update user's ratingUser if necessary
+    if (user.votes >= 5 && user.votes < 10) {
+      user.ratingUser = 'bronze';
+    } else if (user.votes >= 10 && user.votes < 15) {
+      user.ratingUser = 'silver';
+    } else if (user.votes >= 15) {
+      user.ratingUser = 'gold';
+    }
+
+    // Save the updated user
+    await user.save();
+
+    // Respond with success and updated user data including coins
+    res.status(201).json({
+      message: "Vote saved successfully",
+      user: {
+        id: user._id,
+        email: user.email,
+        name: user.name,
+        userRole: user.userRole,
+        coins: user.coins  // Include the 'coins' field in the response
       }
-})
+    });
+  } catch (error) {
+    console.error("Error saving vote for movie:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 
 
 // Patch rating on a single movie
