@@ -52,6 +52,7 @@ const registerUser = asyncHandler(async (req,res)=>{
             name: user.name,
             email: user.email,
             userRole: user.userRole,
+            coins: user.coins,
             token: token
         });
     } catch (error) {
@@ -116,6 +117,7 @@ const loginUser = asyncHandler(async (req,res)=>{
                 name: user.name,
                 email: user.email,
                 userRole: user.userRole,
+                coins: user.coins,
                 token: token
             })
 
