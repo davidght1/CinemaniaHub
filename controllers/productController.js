@@ -91,7 +91,7 @@ cloudinary.config({
         // Save updated user information
         await user.save();
 
-        res.status(200).json({ message: "Product purchased successfully", coupon: couponNumber });
+        res.status(200).json({ message: "Product purchased successfully", coupon: couponNumber, updatedCoins: user.coins});
     } catch (error) {
         console.error("Error buying product:", error);
         res.status(500).json({ message: "Something went wrong, please try again later" });
