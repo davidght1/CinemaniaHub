@@ -285,7 +285,7 @@ const updateMovie = asyncHandler(async (req, res) => {
     // Save the updated movie
     await movie.save();
 
-    res.json({ message: 'Movie details updated successfully', updatedMovie: movie });
+    res.status(201).json({ message: 'Movie details updated successfully', updatedMovie: movie });
   } catch (error) {
     console.error('Error updating movie details:', error);
     res.status(500).json({ message: 'Internal server error' });
@@ -306,7 +306,7 @@ const deleteMovie = asyncHandler(async (req,res)=>{
         // Delete the movie
         await movie.deleteOne();
     
-        res.status(201).json({ message: "Movie deleted successfully" });
+        res.status(200).json({ message: "Movie deleted successfully" });
       } catch (error) {
         console.error("Error deleting movie:", error);
         res.status(500).json({ message: "Internal server error" });
