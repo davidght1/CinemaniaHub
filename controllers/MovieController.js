@@ -251,32 +251,46 @@ const createMovie = asyncHandler(async (req,res)=>{
 })
 
 // Update movie details
-const updateMovie = asyncHandler(async (req,res)=>{
-    try {
-        const movieId = req.params.id;
-        const { title, description, genre, pictureUrl } = req.body;
-    
-        // Check if the movie exists
-        let movie = await Movie.findById(movieId);
-        if (!movie) {
-          return res.status(404).json({ message: "Movie not found" });
-        }
-    
-        // Update movie details
-        movie.title = title || movie.title;
-        movie.description = description || movie.description;
-        movie.genre = genre || movie.genre;
-        movie.pictureUrl = pictureUrl || movie.pictureUrl;
-    
-        // Save the updated movie
-        await movie.save();
-    
-        res.json({ message: "Movie details updated successfully", updatedMovie: movie });
-      } catch (error) {
-        console.error("Error updating movie details:", error);
-        res.status(500).json({ message: "Internal server error" });
-      }
-})
+const updateMovie = asyncHandler(async (req, res) => {
+  try {
+    const movieId = req.params.id;
+    const { title, description, genre } = req.body;
+    let pictureUrl;
+
+    // Check if a new image was uploaded
+    if (req.file) {
+      // If a new photo is uploaded, upload it to Cloudinary or any storage service
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'cinemaniahub',
+      });
+      pictureUrl = result.secure_url; // Store the secure_url from Cloudinary
+    }
+
+    // Find the movie by ID
+    let movie = await Movie.findById(movieId);
+    if (!movie) {
+      return res.status(404).json({ message: 'Movie not found' });
+    }
+
+    // Update movie details
+    movie.title = title || movie.title;
+    movie.description = description || movie.description;
+    movie.genre = genre || movie.genre;
+
+    // If a new photo is provided, update the pictureUrl
+    if (pictureUrl) {
+      movie.pictureUrl = pictureUrl;
+    }
+
+    // Save the updated movie
+    await movie.save();
+
+    res.json({ message: 'Movie details updated successfully', updatedMovie: movie });
+  } catch (error) {
+    console.error('Error updating movie details:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 // Delete movie
 const deleteMovie = asyncHandler(async (req,res)=>{

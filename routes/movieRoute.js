@@ -48,7 +48,7 @@ router.patch("/commends/:id",protectUser, updateCommendsMovie)
 router.post("/",protectAdmin, upload.single("photo"), createMovie)
 
 //edit movie (only by admin)
-router.patch('/update/:id',protectAdmin, updateMovie)
+router.patch('/update/:id', protectAdmin, upload.single('photo'), updateMovie);
 
 //delete movie(only by admin)
 router.delete('/delete/:id',protectAdmin, deleteMovie)
