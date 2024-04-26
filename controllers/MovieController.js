@@ -306,7 +306,7 @@ const deleteMovie = asyncHandler(async (req,res)=>{
         // Delete the movie
         await movie.deleteOne();
     
-        res.json({ message: "Movie deleted successfully" });
+        res.status(201).json({ message: "Movie deleted successfully" });
       } catch (error) {
         console.error("Error deleting movie:", error);
         res.status(500).json({ message: "Internal server error" });
