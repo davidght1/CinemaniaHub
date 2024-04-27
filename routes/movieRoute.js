@@ -8,7 +8,7 @@ const { getAllMovies,
         getMovieStats,
         createMovie,
         updateCommendsMovie,
-        deleteMovie} = require('../../backend/controllers/movieController');
+        deleteMovie} = require('../controllers/movieController');
 const protectUser = require('../middleWare/authUserMiddleware');
 const protectAdmin = require('../middleWare/authAdminMiddleware')
 const protectCinemaOwner = require('../middleWare/authCinemaOwnerMiddleware')
