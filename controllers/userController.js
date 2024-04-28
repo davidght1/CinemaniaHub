@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt')
 const User = require('../models/userModel')
 const jwt = require('jsonwebtoken')
 // register user controller 
-const registerUser = asyncHandler(async (req,res)=>{
+const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
 
     try {
@@ -12,40 +12,46 @@ const registerUser = asyncHandler(async (req,res)=>{
             res.status(400);
             return res.json({ error: "Please fill all required fields" });
         }
-    
+
         // Check if the password is at least 6 characters
         if (password.length < 6) {
             res.status(400);
             return res.json({ error: "Password must be at least 6 characters" });
         }
-    
+
         // Check if the email exists
         const userExists = await User.findOne({ email });
-    
+
         if (userExists) {
             res.status(400);
             return res.json({ error: "Email has already been registered" });
         }
-    
+
+        // Validate the name field to contain only alphabetic characters
+        if (!/^[a-zA-Z]+$/.test(name)) {
+            res.status(400);
+            return res.json({ error: "Name must contain only alphabetic characters" });
+        }
+
         // If all pass, create a new user
-    
+
         // Hash the password
         const salt = await bcrypt.genSalt(10);
         const hashPassword = await bcrypt.hash(password, salt);
-    
+
         // Create a new user
         const user = await User.create({
             name,
             email,
             password: hashPassword
         });
-    
+
         // Create and sign a JWT token
         const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, { expiresIn: '1h' });
-    
+
         // Set the token as an HttpOnly cookie
         res.cookie('token', token, { httpOnly: true, maxAge: 3600000 });
-    
+
         res.status(201).json({
             message: 'user has been created',
             id: user._id,
@@ -71,7 +77,8 @@ const registerUser = asyncHandler(async (req,res)=>{
             res.status(500).json({ error: 'Something went wrong please try again later' });
         }
     }
-})
+});
+
 
 // login user controller 
 const loginUser = asyncHandler(async (req,res)=>{
