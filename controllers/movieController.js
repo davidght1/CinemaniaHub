@@ -316,44 +316,46 @@ const deleteMovie = asyncHandler(async (req,res)=>{
 // --- for cinema users only ---
 
 // Get movie stats for cinema owners
-const getMovieStats = asyncHandler(async (req,res)=>{
-    try {
-        // Get all movies
-        const movies = await Movie.find();
-    
-        // Calculate most chosen vote and total rating per movie
-        const movieStats = movies.map(movie => {
-          // Calculate total rating
-          const totalRating = movie.ratings.reduce((sum, rating) => sum + rating.rating, 0);
-    
-          // Calculate most chosen vote
-          const voteCount = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+const getMovieStats = asyncHandler(async (req, res) => {
+  try {
+      // Get all movies
+      const movies = await Movie.find();
+
+      // Calculate movie statistics
+      const movieStats = movies.map(movie => {
+          // Calculate total average rating (between 1 to 5)
+          const validRatings = movie.ratings.filter(rating => rating.rating >= 1 && rating.rating <= 5);
+          const totalRating = validRatings.length > 0
+              ? validRatings.reduce((sum, rating) => sum + rating.rating, 0) / validRatings.length
+              : 0;
+
+          // Calculate most chosen vote (between 1 to 8)
+          const voteCount = [0, 0, 0, 0, 0, 0, 0, 0];
           movie.userVotes.forEach(vote => {
-            vote.choices.forEach(choice => {
-              if (choice >= 1 && choice <= 8) { 
-                voteCount[choice - 1]++;
-              }
-            });
+              const validChoices = vote.choices.filter(choice => choice >= 1 && choice <= 8);
+              validChoices.forEach(choice => {
+                  voteCount[choice - 1]++;
+              });
           });
-    
-          // Find the maximum count and corresponding vote
+
           const maxVoteCount = Math.max(...voteCount);
           const mostChosenVote = maxVoteCount > 0 ? voteCount.indexOf(maxVoteCount) + 1 : null;
-    
+
           return {
-            movieId: movie._id,
-            title: movie.title,
-            mostChosenVote: mostChosenVote,
-            totalRating: totalRating
+              movieId: movie._id,
+              title: movie.title,
+              totalRating: totalRating,
+              mostChosenVote: mostChosenVote
           };
-        });
-    
-        res.json({ movieStats: movieStats });
-      } catch (error) {
-        console.error("Error getting movie stats:", error);
-        res.status(500).json({ message: "Internal server error" });
-      }
-})
+      });
+
+      res.json({ movieStats: movieStats });
+  } catch (error) {
+      console.error("Error getting movie stats:", error);
+      res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 
 
 module.exports = {
